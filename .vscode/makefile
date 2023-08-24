@@ -36,8 +36,8 @@ $(ODIR)/%.o: %.cpp
 	-c -o $@ $< $(INCS)
 
 starter: $(OBJ_starter)
-	g++ $(OPT) \
-	-o bin/starter.exe $^  \
+	g++ -o bin/shunter.exe \
+	$^ $(OPT) \
 	$(static_link_flags) $(LIBS)
 
 .PHONY: clean
