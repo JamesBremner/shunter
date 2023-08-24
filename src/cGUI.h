@@ -1,3 +1,5 @@
+#include <wex.h>
+
 class cStarterGUI
 {
 public:

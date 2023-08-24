@@ -1,4 +1,4 @@
-// The problem instance
+// Dewclare the problem instance
 // stores the specifications and the solution for the current problem
 struct sProblemInstance
 {
@@ -14,3 +14,15 @@ struct sProblemInstance
 };
 
 extern sProblemInstance gPI;
+
+/// Declare functions to generate problem instances
+
+void generateLinks1();
+void generate1();
+void generate2();
+
+// declare shunting functions
+
+std::vector<int> MoveStationBlocked(int train);
+
+void MoveStationBlockedOnebyOne();
