@@ -10,26 +10,15 @@
 // the graph theory library used for breadth first searching https://github.com/JamesBremner/PathFinder
 #include "GraphTheory.h"
 
-// The problem instance
-// stores the specifications and the solution for the current problem
-struct sProblemInstance
-{
-    // specs
-    raven::graph::sGraphData gd;     // rail network
-    std::vector<int> init_positions; // initial train positions
-    std::vector<int> curr_positions; // current train positions
-    std::vector<int> dest_positions; // destination train positions
+#include "shunter.h"
 
-    // results
-    std::vector<std::vector<int>> paths; // optimum path for each train
-    std::vector<int> order;              // order trains are to be shunted
-} gPI;
+// construct global problem instance
+sProblemInstance gPI;
 
 // generate problem 1 ( based on example in https://stackoverflow.com/q/76954728/16582 )
 
-void generate1()
+void generateLinks1()
 {
-    // rail network
     gPI.gd.g.clear();
     gPI.gd.g.add("0", "1");
     gPI.gd.g.add("1", "2");
@@ -40,6 +29,12 @@ void generate1()
     gPI.gd.g.add("2", "7");
     gPI.gd.g.add("1", "8");
     gPI.gd.g.add("4", "6");
+}
+
+void generate1()
+{
+    // rail network
+    generateLinks1();
 
     // init_positions[N] == M specifies trainN in stationM
     std::vector<int> init_positions{
@@ -49,6 +44,22 @@ void generate1()
     // init_positions[N] == M specifies trainN moves to statitionM
     std::vector<int> dest_positions{
         1, 4, 5};
+    gPI.dest_positions = dest_positions;
+}
+
+void generate2()
+{
+    // rail network - same as for problem1
+    generateLinks1();
+
+        // init_positions[N] == M specifies trainN in stationM
+    std::vector<int> init_positions{
+        0};
+    gPI.init_positions = init_positions;
+
+    // init_positions[N] == M specifies trainN moves to statitionM
+    std::vector<int> dest_positions{
+        3};
     gPI.dest_positions = dest_positions;
 }
 
@@ -67,7 +78,7 @@ void MoveNoStationsBlocked()
     }
 }
 
-/// @brief Move train from initial to destionation position, if possible
+/// @brief Move train from initial to destination position, if possible
 /// @param train
 /// @return vector of station indices on path, empty if destination unreachabe
 
@@ -144,50 +155,9 @@ void MoveStationBlockedOnebyOne()
     }
 }
 
-cGUI::cGUI()
-    : cStarterGUI(
-          "Shunter",
-          {50, 50, 1000, 500})
-{
-    fm.events().draw(
-        [&](PAINTSTRUCT &ps)
-        {
-            wex::shapes S(ps);
-            displayTrainPaths(S);
-        });
-
-    show();
-    run();
-}
-
-void cGUI::displayTrainPaths(wex::shapes &S)
-{
-    int row = 0;
-    for (int train : gPI.order)
-    {
-        S.text("train" + std::to_string(train) + ":",
-               {20, 50 + 50 * row, 50, 25});
-        std::string line;
-        for (int station : gPI.paths[train])
-        {
-            line += gPI.gd.g.userName(station) + " ";
-        }
-        S.text(line, {80, 50 + 50 * row, 200, 25});
-        row++;
-    }
-    for (int train = 0; train < gPI.init_positions.size(); train++)
-        if (!gPI.paths[train].size())
-        {
-            S.text("train" + std::to_string(train) + ": blocked",
-                   {20, 50 + 50 * row, 200, 25});
-            row++;
-        }
-}
-
 main()
 {
     generate1();
-    // MoveNoStationsBlocked();
     MoveStationBlockedOnebyOne();
 
     cGUI theGUI;
