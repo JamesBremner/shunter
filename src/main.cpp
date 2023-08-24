@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <wex.h>
-#include "cStarterGUI.h"
+#include "cGUI.h"
 
 // the graph theory library used for breadth first searching https://github.com/JamesBremner/PathFinder
 #include "GraphTheory.h"
@@ -68,7 +68,7 @@ void MoveNoStationsBlocked()
 }
 
 /// @brief Move train from initial to destionation position, if possible
-/// @param train 
+/// @param train
 /// @return vector of station indices on path, empty if destination unreachabe
 
 std::vector<int> MoveStationBlocked(int train)
@@ -95,7 +95,7 @@ std::vector<int> MoveStationBlocked(int train)
         for (auto &l : vl)
         {
             if (l.first == blockedStation || l.second == blockedStation)
-                sub.g.remove(l.first, l.second); 
+                sub.g.remove(l.first, l.second);
         }
     }
 
@@ -144,48 +144,45 @@ void MoveStationBlockedOnebyOne()
     }
 }
 
-class cGUI : public cStarterGUI
+cGUI::cGUI()
+    : cStarterGUI(
+          "Shunter",
+          {50, 50, 1000, 500})
 {
-public:
-    cGUI()
-        : cStarterGUI(
-              "Shunter",
-              {50, 50, 1000, 500})
+    fm.events().draw(
+        [&](PAINTSTRUCT &ps)
+        {
+            wex::shapes S(ps);
+            displayTrainPaths(S);
+        });
+
+    show();
+    run();
+}
+
+void cGUI::displayTrainPaths(wex::shapes &S)
+{
+    int row = 0;
+    for (int train : gPI.order)
     {
-        fm.events().draw(
-            [&](PAINTSTRUCT &ps)
-            {
-                // display train paths
-
-                wex::shapes S(ps);
-                int row = 0;
-                for (int train : gPI.order)
-                {
-                    S.text("train" + std::to_string(train) + ":",
-                           {20, 50 + 50 * row, 50, 25});
-                    std::string line;
-                    for (int station : gPI.paths[train])
-                    {
-                        line += gPI.gd.g.userName(station) + " ";
-                    }
-                    S.text(line, {80, 50 + 50 * row, 200, 25});
-                    row++;
-                }
-                for (int train = 0; train < gPI.init_positions.size(); train++)
-                    if (!gPI.paths[train].size())
-                    {
-                        S.text("train" + std::to_string(train) + ": blocked",
-                               {20, 50 + 50 * row, 200, 25});
-                        row++;
-                    }
-            });
-
-        show();
-        run();
+        S.text("train" + std::to_string(train) + ":",
+               {20, 50 + 50 * row, 50, 25});
+        std::string line;
+        for (int station : gPI.paths[train])
+        {
+            line += gPI.gd.g.userName(station) + " ";
+        }
+        S.text(line, {80, 50 + 50 * row, 200, 25});
+        row++;
     }
-
-private:
-};
+    for (int train = 0; train < gPI.init_positions.size(); train++)
+        if (!gPI.paths[train].size())
+        {
+            S.text("train" + std::to_string(train) + ": blocked",
+                   {20, 50 + 50 * row, 200, 25});
+            row++;
+        }
+}
 
 main()
 {

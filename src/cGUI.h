@@ -65,21 +65,7 @@ protected:
 class cGUI : public cStarterGUI
 {
 public:
-    cGUI()
-        : cStarterGUI(
-              "Shunter",
-              {50, 50, 1000, 500})
-    {
-        fm.events().draw(
-            [&](PAINTSTRUCT &ps)
-            {
-                wex::shapes S(ps);
-                displayTrainPaths( S );
-            });
-
-        show();
-        run();
-    }
+    cGUI();
 
 private:
     void displayTrainPaths(wex::shapes &S);
