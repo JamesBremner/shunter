@@ -1,3 +1,4 @@
+#include <fstream>
 #include "GraphTheory.h"
 #include "shunter.h"
 
@@ -37,7 +38,7 @@ void generate2()
     // rail network - same as for problem1
     generateLinks1();
 
-        // init_positions[N] == M specifies trainN in stationM
+    // init_positions[N] == M specifies trainN in stationM
     std::vector<int> init_positions{
         0};
     gPI.init_positions = init_positions;
@@ -46,4 +47,24 @@ void generate2()
     std::vector<int> dest_positions{
         3};
     gPI.dest_positions = dest_positions;
+}
+
+void readfile(const std::string &fname)
+{
+    // rail network - same as for problem1
+    generateLinks1();
+
+    std::ifstream ifs(fname);
+    if (!ifs.is_open())
+        throw std::runtime_error(
+            "Cannot open " + fname);
+    int start, end;
+
+    ifs >> start >> end;
+    while (ifs.good())
+    {
+        gPI.init_positions.push_back(start);
+        gPI.dest_positions.push_back(end);
+        ifs >> start >> end;
+    }
 }

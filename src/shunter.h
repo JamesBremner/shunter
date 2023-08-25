@@ -20,6 +20,7 @@ extern sProblemInstance gPI;
 void generateLinks1();
 void generate1();
 void generate2();
+void readfile( const std::string& fname );
 
 // declare shunting functions
 
