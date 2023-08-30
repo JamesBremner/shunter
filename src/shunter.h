@@ -20,7 +20,14 @@ extern sProblemInstance gPI;
 void generateLinks1();
 void generate1();
 void generate2();
-void readfile( const std::string& fname );
+
+/// @brief  read input file, one train per line
+/// @param fname 
+void readtrainfile( const std::string& fname );
+
+/// @brief read input file, one station per line
+/// @param fname 
+void readstationfile( const std::string& fname );
 
 // declare shunting functions
 

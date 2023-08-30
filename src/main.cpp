@@ -16,7 +16,7 @@ sProblemInstance gPI;
 main()
 {
     //generate1();
-    readfile("../dat/prob1.txt");
+    readtrainfile("../dat/prob1.txt");
     MoveStationBlockedOnebyOne();
 
     cGUI theGUI;

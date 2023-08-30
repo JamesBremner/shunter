@@ -49,7 +49,7 @@ void generate2()
     gPI.dest_positions = dest_positions;
 }
 
-void readfile(const std::string &fname)
+void readtrainfile(const std::string &fname)
 {
     // rail network - same as for problem1
     generateLinks1();
@@ -66,5 +66,40 @@ void readfile(const std::string &fname)
         gPI.init_positions.push_back(start);
         gPI.dest_positions.push_back(end);
         ifs >> start >> end;
+    }
+}
+void readstationfile( const std::string& fname )
+{
+    // rail network - same as for problem1
+    generateLinks1();
+
+    std::ifstream ifs(fname);
+    if (!ifs.is_open())
+        throw std::runtime_error(
+            "Cannot open " + fname);
+    int start, end;
+
+    int station = -1;
+    ifs >> start >> end;
+    while (ifs.good())
+    {
+        station++;
+
+        if( start == -1 && end == -1 ) {
+            // ignore stations that are empty at start and beginning
+            continue;
+        }
+        if( start > -1)
+        {
+            if( start > gPI.init_positions.size()-1)
+                 gPI.init_positions.resize(start,-1);
+            gPI.init_positions[start] = station;
+        }
+        if( end > -1 )
+        {
+            if( start > gPI.dest_positions.size()-1)
+                 gPI.dest_positions.resize(end,-1);
+            gPI.dest_positions[start] = station;
+        } 
     }
 }
